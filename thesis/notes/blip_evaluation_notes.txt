@@ -1,0 +1,3 @@
+I will perform caption generation using ViT-GPT2 and BLIP on a subset of the Flickr30k dataset. I will compare the synthetic captions with the actual captions using either TF-IDF vectors or Text-Similarity Model.
+
+The goal is to show that 1. BLIP is a superior model to ViT-GPT2 and 2. BLIP makes use of ViT as a backbone, and hence BLIP enhances the performance of ViT and does not merely benefit off it.

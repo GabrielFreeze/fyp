@@ -1,0 +1,17 @@
+• Adapt or copy figures to thesis
+• Write about KeyWord Extraction, NER Tags
+• Apply keyword extraction, NER, sentiment, to csv files [☺]
+• Create new webscrapers for other newsrooms [independent.com.mt [☺], maltatoday.com.mt [☺], maltadaily.mt [X]]
+• Review previously drafted pipeline/methodology.
+• Look into sentiment analysis [☺]
+• Change webscrapers to include all images, not just front [☺]
+• Maybe include journalist name in article? [X]
+• Apply TSC on 'Person' NER Tags on Title, and first and last instance in Body [☺]
+• Finish textual data extraction [☺], create finished dataset [☺], start passing to caption generation models [☺].
+
+• Apply NER Tagging to Keyword Body [☺]
+
+• Sentence Similarity Score between [BLIP Caption,NER Caption], [BLIP Caption, Keyword Body], [BLIP Caption, NER Title], [☺]
+
+• Image-Text Matching on NER Title, NER Caption, Keyword Body [☺]
+

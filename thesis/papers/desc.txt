@@ -1,0 +1,8 @@
+The PushShift Reddit Dataset - The authors offer a dataset of posts and comments posted on Reddit between 2005 and 2019. They also offer an API to access the dataset online. The database is stored using PostgreSQL.
+
+A Measure of Media Bias - Media Bias in american news outlets was measure by counting the number of times a media outlet cites various think thanks and policy groups and compares this with the times that members of the Congress cite the same group.
+
+Media Bias - The authors consider two types of media bias; spin - The media outlet's attempt to create a memorable story from a happening, and ideology - an outlet's desire to affect the reader's opinion into a particular direction. A statistical and numerical model was developed that features two players, media sources and consumers. Based off this model, when there is no spin in different media outlets narrating a story, competition between the media outlets undoes the biases from their different ideologies. Moreover,  if the media outlets are not promoting a certain ideology, then competition between them only enforces spin, which the author refers to as "piling on".
+
+
+Automated Identification of... - [READ ME]

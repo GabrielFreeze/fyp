@@ -1,0 +1,28 @@
+The paper proposes two main ideas: A new architecture for multi-task pretraining.Takes in image-text pair, and fuses them together. The other idea is a data bootstrapping technique that includes training captioners and filters. There is part that learn show to genrerate good data and another part that learns how to filter data. Hence porrly labelled images from the internet can be filtered and the data can also be augmented, which improves the efficacy of the dataset.
+
+The main limitations of VLP are either encoder-based or encoder-decoder based. Encoder-based models are more complex to transfer to text generation tasks, while encoder-decoder tasks have not yet been successfully adopted for image-text retrieval (Takes the image and produces the caption) tasks.  Morover, these models are trained on image-text pairs on the interent which includes a lot of noise which greatly reduces the performance of the models (scale of data vs quality of data).
+
+They propse the Multimodal mixture of encode-decoder (MED). Which can operate either as a unimodal encoder or an image-grounded text decoder. Moreover they porpose CapFilt, a dataset boosting method that creates synthetic captions for images and also filters noisy captions form the web. The paper shows that CapFilt manages to improve the performane of the model.
+
+
+Overview of the model architecture (MED) (given an image-text pair):
+1. Visual Transformer (ViT) -  The image is encoded using a ViT
+2. Unimodal encoder - The text is encoded using a unimodal encoder. Uses Image-Text COntrastivce Loss (ITC).
+
+3. Image-grounded text encoder - Encodes the text into some embedding while also incorporating information from the visual transformer's output (from the image) via cross-attention. It is a joint-representation of the text that has information of the image inside of it. Uses Image Text Matching Loss (ITM), which is a binary classification task to predict whether an image-text pair is poitive or negative given their multimodal encoding.
+
+4. Image-grounded text decoder - Attempts to decode the output of the image-grounded text encoder, by generating a text output by incorporating thew information from the joint-representation. Uses Language Modelling Loss in order to maximise the likelihood of the generated text in an "autoregressive manner" using cross-entropy.
+
+The authors state that alt text does not always accuratley describe the visual content of the images on the web. They propose CapFilt, which given the noisy image-text pairs collected from the web, they train the MED (the previously described architecture) on it. Then the model is finetuned on human-made supervised data of image-text p airs (such as COCO). Which is used to boost the quality. They use COCO to train a filter and a capotioner which are finetuned versions of the inital MED model. THe captioner takes in an image and gives a synthetic caption (which the MED model can easily be adapted to do). Similalry the filter takes in an image and text pair and gives a similarity score. Now, given the trained filterer and captioner, we can take the images from our initial dataset, and pass it to the captioner in order to produce another image-text pair synthetic dataset. Then both the syntehtic and the initial datset can be joined, then passed to the filterer in order to remove image-text pairs that do not match together. Hence then we get an augmented and more high quality dataset. This process heavily depends on the quality of the finetuned dataset (COCO).
+
+
+The major point of the paper is thaty they porpose a unifed framework for VLP, the model can understand major language understanding and generation. Understanding means that multimodal features can be produced from the image-text pairs, and generation means that the model can generate text based from some image input. The authors achieve good performance form the dataset bootstrapping. The quality of the dataset is improved via the captioner and filterer method. The authors emphasise the quality of the dataset over the qunatity. <Mention the examples of the actual/generatedcaptions from the dataset.>
+
+The model is first pre-trained on the uncurate dataset, then fine-tuning is used to fork the filter and captioner modles from the original model, which is used to filter and augment the original dataset. The model's architecture is divided into different modules, which can be rearranged in order for the model to perform different tasks such as Caption Generation, VQA, NLVR, VisDial
+
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+Maxdiff spectrum graph inspired by eilders2002conflict
+
+Sentiment Analysis modules aim to uncover statement bias \ref{Types of Media Bias}

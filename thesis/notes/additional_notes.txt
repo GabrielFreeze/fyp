@@ -1,0 +1,2 @@
+Add punctuation to all figure captions
+Ensure consistency eg. headline/title, pretraining/pre-training

@@ -1,0 +1,15 @@
+TODO:
+• Look at comments I made in overleaf document
+• Remove excess references (leave around 70)
+• Fix document as per comments in tutor report [☺]
+• Write Summary of Evaluation, Conclusion, Organisation of Document, and Abstract in that order
+• Check for incosistencies in acronyms and terms (eg. pretrained vs pre-trained)
+• Check for incosistencies in references
+• Downplay influence of hamborg2019automated in Literature review
+• Remove a lot of pages and make sure you fit in the page limit
+• Fix broken referencees/links
+
+
+
+Future work points
+• as mention in labelling_wordchoice the one-dimensional positive-negative scale falls show of representing the complexity of news artcilees. A multi dimensional scale should be aplpied to the methodology for a more thoiurough evaluation

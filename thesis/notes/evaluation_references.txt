@@ -1,0 +1,28 @@
+• Check how sentiment studies visualised sentiment
+
+
+Studies where correlation coefficients were used in media bias studies:
+
+\cite{gentzkow2010drives}
+\cite{puglisi2011newspaper}
+
+Studies where stacked bar graph is used like graphs were used:
+\cite{eilders2002conflict}
+\cite{price2014big}
+
+Studies where maxdiff graph were used:
+\cite{eilders2002conflict}
+
+Studies where scatter plots where used:
+\cite{puglisi2011newspaper}
+
+
+\cite{puglisi2011newspaper}: scatter, correlation
+\cite{eilders2002conflict}: stacked, maxdiff
+
+\cite{price2014big}: stacked, bar charts
+
+
+
+
+

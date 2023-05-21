@@ -1,0 +1,54 @@
+IMPORTANT LINKS:
+
+Paper: https://arxiv.org/pdf/2201.12086.pdf
+
+Official Code: https://github.com/salesforce/BLIP
+
+Official Colab Inference Demo: https://colab.research.google.com/github/salesforce/BLIP/blob/main/demo.ipynb
+
+BLIP Colab Multiple Images: https://colab.research.google.com/drive/1RNE_nxNrcDcSHSEiBLmMBmC40w9w_yE4?usp=sharing
+
+Official Blog: https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/
+
+
+
+
+
+Paper: https://arxiv.org/pdf/2201.12086.pdf
+
+Official Code: https://github.com/salesforce/BLIP
+
+Official Colab Inference Demo: https://colab.research.google.com/github/salesforce/BLIP/blob/main/demo.ipynb
+
+BLIP Colab Multiple Images: https://colab.research.google.com/drive/1RNE_nxNrcDcSHSEiBLmMBmC40w9w_yE4?usp=sharing
+
+Official Blog: https://blog.salesforceairesearch.com/blip-bootstrapping-language-image-pretraining/
+
+
+
+
+
+Example of media reporting negative news in hopes of mitigating the audience in reading the same news from different sources that may incriminate the event even further.
+
+https://one.com.mt/il-gvern-amerikan-jissanzjona-lil-mizzi-u-schembri-milli-jidhlu-fl-istati-uniti/
+
+https://netnews.com.mt/2021/12/22/konrad-mizzi-u-keith-schembri-pprojbiti-milli-jidhlu-fl-istati-uniti-minhabba-l-korruzzjoni-u-t-tixhim-li-wettqu/
+
+
+
+TVM does not report on Pope's corruption speech.
+https://tvmnews.mt/en/news/watch-the-pope-describes-malta-as-the-heart-of-the-mediterranean/
+
+https://timesofmalta.com/articles/view/pope-francis-sent-malta-an-anti-corruption-message-why-did-tvm-not.946161
+
+Net Reports on corruption.
+https://netnews.com.mt/2022/04/02/il-papa-frangisku-jwissi-dwar-il-korruzzjoni-u-t-tragedja-tal-immigrazzjoni/
+
+One does not mention the corruption.
+
+
+
+
+READ THIS!! => https://www.annualreviews.org/doi/pdf/10.1146/annurev-polisci-040811-115123
+
+
