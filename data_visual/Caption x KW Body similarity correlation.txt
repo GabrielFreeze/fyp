@@ -1,5 +1,0 @@
-TODO: Show these numbers in a table but reference the appendix where each newspapers "BLIP Caption x NER Caption - BLIP Caption x KW Body scatter" graph is shown
-
-ToM: 0.47
-The Shift: 0.28
-Malta Today: 0.34

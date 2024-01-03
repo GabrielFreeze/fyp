@@ -3,16 +3,18 @@ import sys
 import signal
 import requests
 import pandas as pd
+from tqdm import tqdm
 from time import sleep
-from methods import WebScraper
+from datetime import datetime
 from selenium import webdriver
+from ws_methods import WebScraper
 from selenium.webdriver.common.by import By
 
 m = WebScraper(folder_name='gozo_news')
 
 def signal_handler(sig,frame):
-    pd.DataFrame(columns=['Title','Image Name','Body'],
-                         data=data).to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)
+    (pd.DataFrame(columns=columns,data=data)
+       .to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False))
     driver.quit()
     sys.exit()
 def get_img_ext(img_link):
@@ -25,39 +27,28 @@ def get_img_ext(img_link):
         return '.png'
     else: return ""
 
-# signal.signal(signal.SIGINT, signal_handler)
-
-# options = webdriver.ChromeOptions()
-# options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# options.add_argument('--disable-browser-side-navigation')
-# driver = webdriver.Chrome(m.CHROME_DRIVER_PATH, chrome_options=options)
-driver = webdriver.Firefox(m.GECKO_DRIVER_PATH)
+signal.signal(signal.SIGINT, signal_handler)
+driver = webdriver.Chrome(m.CHROME_DRIVER_PATH)
 
 data = []
-count = 0
+img_count = 0
+num_pgs = 1200
+save_every = 5
+assert num_pgs%save_every == 0 
+columns = ['Title','Author','Date','Image Name','Caption','Body','URL']
 
-for pg_num in range(134):
+for pg_idx in tqdm(range(num_pgs+1)):
 
     #Go to next page
-    driver.get(f'https://gozo.news/page/{pg_num+1}/')
-
-    #Attempt to close ad
-    # try: driver.find_element(By.XPATH,'//*[@id="dismiss-button"]').click()
-    # except: pass
+    driver.get(f'https://gozo.news/page/{pg_idx+1}/')
 
     #Get list of articles
     links = [i.find_element(By.TAG_NAME,'a').get_attribute('href') 
              for i in driver.find_elements(By.CLASS_NAME,'post-thumbnail')]
     
     for a in links:
-        print(f'{round(count/800,4)*100}%',end='\r')
         #Go to article
         driver.get(a)
-
-        #Attempt to close ad
-        # try: driver.find_element(By.XPATH,'//*[@id="dismiss-button"]').click()
-        # except: pass
-
 
         #Get title
         title = driver.find_element(By.XPATH,'//*[@id="page"]/div/div/div/section/div[2]/article/div/h1').text
@@ -65,9 +56,9 @@ for pg_num in range(134):
         #Get image
         try: img_src = driver.find_element(By.XPATH,'//*[@id="page"]/div/div/div/section/div[2]/article/div/div[3]/div[1]/p[1]/img').get_attribute('src')
         except: continue
-        img_name = f'img{str(count).zfill(5)}{get_img_ext(img_src)}' #Get image name
+        img_name = f'img{str(img_count).zfill(5)}{get_img_ext(img_src)}' #Get image name
         img_data = requests.get(img_src).content #Download image
-        count += 1
+        img_count += 1
 
         #Write image
         with open(os.path.join(m.NEWS_IMG_PATH,img_name),'wb') as f:
@@ -76,10 +67,24 @@ for pg_num in range(134):
         #Get body
         body = " ".join([p.text for p in driver.find_element(By.CLASS_NAME,'entry-inner').find_elements(By.TAG_NAME,'p')])
 
-        data.append([title,img_name,body])
+        #Get Author
+        author = driver.find_element(By.XPATH,'//*[@id="page"]/div/div/div/section/div[2]/article/div/p/a').text
+
+        #Get Date
+        date = driver.find_element(By.XPATH,'//*[@id="page"]/div/div/div/section/div[2]/article/div/p').text.split('·')[1]
+        date = datetime.strptime(date," %B %d, %Y").strftime('%d-%m-%Y')
+
+        #Add row
+        data.append([title,author,date,img_name,"",body,a])
+
+    if pg_idx%save_every == 0:
+        #Save data to csv
+        (pd.DataFrame(columns=columns,data=data)
+           .to_csv(os.path.join(m.NEWS_PATH,'data.csv'),index=False))        
+
 
 #Save data to csv
-pd.DataFrame(columns=['Title','Image Name','Body'],
-             data=data).to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)
+(pd.DataFrame(columns=columns,data=data)
+   .to_csv(os.path.join(m.NEWS_PATH,'data.csv'),index=False))
 driver.quit()
 

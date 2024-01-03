@@ -1,5 +1,0 @@
-Aim: To provide empirical evidence and personal accounts to why BLIP was used instead of another SOTA VLP model.
-
-Explain the other model: Researchers at google developed a transformer based seq2seq model that can leverage already existing Language Models (BERT, GPT-2, RoBERTa) to 'warm-start' another sequence generation model. This basically allows image2text/VLP models to be initalised with any pretrained vision (ViT) or language (GPT2) model.
-
-What we did: Caption generation using 1000 images from Flickr30k dataset via both BLIP and ViTGPT-2. Text similarity model was used to compare the synthetic and actual caption, and also TF-IDF vector, in order to provide a more grounded metric.

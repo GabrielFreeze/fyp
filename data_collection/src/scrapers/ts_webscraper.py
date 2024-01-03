@@ -1,34 +1,21 @@
 import os
-import signal
-import sys
-from time import sleep, time
-
-import numpy as np
-import pandas as pd
+import re
 import requests
-import selenium
-from methods import WebScraper
+import pandas as pd
+from time import time
+from time import sleep
+from ws_methods import WebScraper
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 m = WebScraper(folder_name='the_shift')
 
-def signal_handler(sig,frame):
-    
-    pd.DataFrame(columns=['Title','Image Name','Category','Caption','Body'],
-                         data=data).to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)
-    driver.quit()
-    sys.exit()
-
-options = webdriver.ChromeOptions()
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# options.add_extension(os.path.join('..','chromedriver_win32','uBlock-Origin.crx'))
-# options.add_experimental_option('excludeSwitches', ['enable-logging'])
-
-# # Since chromedriver is in PATH we dont have specify it location otherwise webdriver.Chrome('path/chromedriver.exe')
-driver = webdriver.Chrome(m.CHROME_DRIVER_PATH, chrome_options=options)
-
-
+# def signal_handler(sig,frame):
+#     print('SIG Received - Saving..')
+#     pd.DataFrame(columns=columns,
+#             data=data).to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)
+#     driver.quit()
+#     sys.exit()
 def remove_dono():
     #Remove occasional donation pop-up (great ux btw)
     try: driver.find_element(By.XPATH,'//*[@id="popmake-64842"]/button')
@@ -43,48 +30,73 @@ def get_img_ext(img_link):
         return '.png'
     else: return ""
 
+# Since chromedriver is in PATH we dont have specify it location otherwise webdriver.Chrome('path/chromedriver.exe')
+driver = webdriver.Chrome(m.CHROME_DRIVER_PATH)
+count = 0
+data = []
 
-#Wait for donation pop-up to appear and close it forever
+num_pgs = 100
+save_every = 5
+assert num_pgs%save_every == 0
+
+columns = ['Title','Author','Date','Image Name','Caption','Body','URL']
+
+
 driver.get(f'https://theshiftnews.com/2022/01/08')
 sleep(5)
-remove_dono()
-count = 624
-data = []
-try:
-    for pg_num in range(22,50+1):
-        
-        #Go to next page
-        driver.get(f'https://theshiftnews.com/category/news/page/{pg_num+1}/')
 
-        #Get list of articles
-        links = [i.find_element(By.TAG_NAME,'a').get_attribute('href') 
-                for i in driver.find_elements(By.CLASS_NAME,'comitem')]
-        
-        for a in links:
-            #Go to article
-            driver.get(a)
-            remove_dono()
+#Accept Cookies
+try: driver.find_element(By.XPATH,'//*[@id="cookie_action_close_header"]').click()
+except: pass
+
+#Close Donation pop-up
+remove_dono()
+
+
+
+for pg_idx in range(num_pgs+1):
+    print(f'Page: {pg_idx+1}')
+    #^C Handler to save on signal.
+    # signal.signal(signal.SIGINT, signal_handler) 
+
+    #Go to (next) page
+    driver.get(f'https://theshiftnews.com/category/news/page/{pg_idx+1}/')
+
+    #Get list of articles
+    links = [i.find_element(By.TAG_NAME,'a').get_attribute('href') 
+            for i in driver.find_elements(By.CLASS_NAME,'comitem')]
+    
+    for a in links:
+        #Go to article
+        driver.get(a)
+
+        try:
 
             #Go to english article if available
-            if driver.find_elements(By.XPATH,'//*[@id="container"]/div[4]')[0].text\
-                .startswith('This article is available'):
-                remove_dono()
-                driver.get(driver.find_element(By.XPATH,'//*[@id="container"]/div[4]/p[1]/em/a')\
-                           .get_attribute('href'))
-                print('Redirecting to English article.')
-
+            if (driver.find_elements(By.XPATH,'//*[@id="container"]/div[4]')[0].text.startswith('This article is available')):
+                driver.get((driver.find_element(By.XPATH,'//*[@id="container"]/div[4]/p[1]/em/a')
+                                .get_attribute('href')))
             
-            #Get title
+            #Get Title
             title = driver.find_element(By.XPATH,'//*[@id="container"]/h2').text
+            print(f'Extracting: {title[:30]}... ',end='')
 
-            #Get caption if any
+            #Get Caption (if any)
             try: caption = driver.find_element(By.XPATH,'//*[@id="container"]/div[1]/div/p').text
             except: caption = ""
             
-            #Get body
+            #Get Body
             body = driver.find_element(By.XPATH,'//*[@id="container"]/div[4]').text
 
-            remove_dono()
+            #Get Author
+            author = driver.find_element(By.XPATH,'//*[@id="container"]/div[2]/div/div[2]/div/a').text
+
+            #Get URL
+            url = driver.current_url
+
+            #Get Date
+            match = re.match(r"https:\/\/theshiftnews\.com\/([0-9]*)\/([0-9]*)\/([0-9]*)",url)
+            date = f"{match.group(3)}-{match.group(2)}-{match.group(1)}" 
 
             #Get image
             img_link = driver.find_element(By.XPATH,'//*[@id="container"]/div[1]/div/img').get_attribute('src')
@@ -93,20 +105,26 @@ try:
             count += 1
             
             #Ensure the image actually downloads
-            while len(img_data := requests.get(img_link).content) <= 146: pass
-
-            remove_dono()
-
+            t=time()
+            while len(img_data := requests.get(img_link).content) <= 146 and time()-t < 5: 
+                pass
 
             with open(os.path.join(m.NEWS_IMG_PATH,img_name),'wb') as f:
                 f.write(img_data)
+            
+            #Add row
+            data.append([title,author,date,img_name,caption,body,url])
+            print('[OK]')
 
-            data.append([title,img_name,caption,body])
-            print(count,pg_num)
-except Exception as e: print(str(e))
-    
-pd.DataFrame(data,columns=['Title','Image Name','Caption','Body'])\
-    .to_csv(os.path.join(m.NEWS_PATH,'data.csv'),index=False, mode='a', header=False)
+        except Exception as e:
+            print(f'[ERR]')
+
+    #Save to csv
+    if pg_idx%save_every == 0:
+        print('\nSaving...')
+        (pd.DataFrame(columns=columns,data=data)
+            .to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)) 
+
 
             
         

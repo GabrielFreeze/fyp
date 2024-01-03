@@ -1,4 +1,4 @@
 # fyp
 Final Year Project
 
-Contact: gabriel.hili.20@um.edu.mt
+Contact: gabriel.hili@um.edu.mt

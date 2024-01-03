@@ -1,36 +1,11 @@
 import os
 import re
 import numpy as np
-from time import time
 from typing import Tuple
 
-# from keybert import KeyBERT
-# from flair.data import Sentence
-# from flair.models import SequenceTagger
-from NewsSentiment import TargetSentimentClassifier
-
-
-class WebScraper:
-
-    def __init__(self,folder_name='data'):
-        self.CHROME_DRIVER_PATH = os.path.join('..','chromedriver_win32',
-                                               'chromedriver_win32.exe')
-        self.GECKO_DRIVER_PATH  = os.path.join('..','geckodriver')
-                                               
-        self.NEWS_IMG_PATH = os.path.join('..',folder_name,'img')
-        self.NEWS_PATH = os.path.join('..',folder_name)
-
-def init_directory(self, subs):
-
-    #Ensures that all folders relating to subreddits
-    #are already created in the folder images.
-    for sub in subs:
-        if not os.path.exists(f'sub\\{sub}'):
-            os.mkdir(f'sub\\{sub}')
-        if not os.path.exists(f'sub\\{sub}\\images'):
-            os.mkdir(f'sub\\{sub}\\images')
-    
-    return
+from flair.data import Sentence
+from flair.models import SequenceTagger
+# from NewsSentiment import TargetSentimentClassifier
 
 class NERTagger:
     def __init__(self, ner_path=os.path.join('..','..','checkpoints','flair_ner_english')) -> None:
@@ -97,24 +72,8 @@ class NERTagger:
             delta_len += len(ner_str) - this_len
         
 
-
         return ner_str
-
-class KeyWordExtractor:
-    def __init__(self):
-        self.model = KeyBERT()
-        self.counter = 0
-    
-    def extract_keywords(self, raw_str:str)->str:
-        self.counter += 1
-        print(f'{round((self.counter/800)*100,2)}%',end='\r')
-        keywords  = self.model.extract_keywords(docs=raw_str,
-                                     top_n=20, keyphrase_ngram_range=(1,1))
-        keywords += self.model.extract_keywords(docs=raw_str,
-                                     top_n=5, keyphrase_ngram_range=(1,2))
-        
-        return ",".join([kw for kw,_ in keywords])            
-
+      
 class SentimentAnalysis:
     def __init__(self):
         self.tsc = TargetSentimentClassifier()
@@ -218,7 +177,6 @@ class SentimentAnalysis:
         
         return round(pos,4), round(net,4), round(neg,4)
 
-
 def get_sentences(text:str):
     alphabets= "([A-Za-z])"
     prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
@@ -253,9 +211,7 @@ def get_sentences(text:str):
     text = text.replace("<prd>",".")
     sentences = text.split("<stop>")
     
-    return [s.strip() for s in sentences]
-
-    
+    return [s.strip() for s in sentences] 
 
 def get_1st_last_sentence(text:str):
     alphabets= "([A-Za-z])"

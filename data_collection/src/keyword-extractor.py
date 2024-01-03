@@ -1,40 +1,32 @@
 import os
+import sys
 import pandas as pd
 from time import time
-from methods import KeyWordExtractor
+from kw_methods import KeyWordExtractor
 
-def main():
+def main(folder:str):
     kw_extractor = KeyWordExtractor()
-      
-    data_path = os.path.join('..','independent')
-
+    data_path = os.path.join('..',folder)
     df = pd.read_csv(os.path.join(data_path,'ner_data.csv'), index_col=False)
+
+    columns=['Title','NER Title','Image Name','Body','NER Body','KW Body']
+    
+    if 'Caption' in df.columns:
+        columns = columns[:3]+['Caption','NER Caption']+columns[3:]
+
 
     print('Extracting Keywords from Body:')
     start = time()
     df['KW Body'] = df['NER Body'].apply(lambda s: kw_extractor.extract_keywords(str(s)))
     print(f'[OK] - {round(time()-start,2)}s')
 
-    # print('NER Tagging Keywords:')
-    # start=time()
-    # df['KW Body'] = df['KW Body'].apply(lambda s: ner_tagger.ner_switch(str(s)))
-    # print(f'[OK] - {round(time()-start,2)}s')
-
 
     df.to_csv(os.path.join(data_path,'kw_data.csv'),
-            columns=['Title','NER Title','Image Name','Caption','NER Caption','Body','NER Body','KW Body'],
-            # columns=['Title','NER Title','Image Name','Body','NER Body','KW Body'],
-            # columns=['Title','NER Title','Title s_Positive','Title s_Neutral','Title s_Negative','Image Name',
-            #          'Caption','NER Caption',
-            #         'BLIP Caption',
-            #         'Caption s_Positive','Caption s_Neutral','Caption s_Negative',
-            #          'Body','NER Body','KW Body','Body s_Positive','Body s_Neutral','Body s_Negative'],
-            index=False)
+            columns=columns,index=False)
 
 
 if __name__ == '__main__':
-    main()
-
+    main(folder=sys.argv[1])
 
 
 

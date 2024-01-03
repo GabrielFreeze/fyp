@@ -1,8 +1,0 @@
-TODO: Show these numbers in a table but reference the appendix where each newspapers "BLIP Caption x NER Title - BLIP Caption x KW Body scatter" graph is shown
-
-ToM: 0.73
-The Shift: 0.59
-Malta Today: 0.7
-Malta Independent:0.7
-Malta Daily: 0.67
-Gozo News: 0.68

@@ -3,21 +3,19 @@ import sys
 import signal
 import requests
 import pandas as pd
-from time import time
 from time import sleep
-from methods import WebScraper
+from datetime import datetime
 from selenium import webdriver
+from ws_methods import WebScraper,color
 from selenium.webdriver.common.by import By
-
 
 m = WebScraper(folder_name='independent')
 
 def signal_handler(sig,frame):
-    pd.DataFrame(columns=['Title','Image Name','Body'],
-                         data=data).to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)
+    (pd.DataFrame(columns=columns,data=data)
+       .to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False))
     driver.quit()
     sys.exit()
-
 def get_img_ext(img_link):
     if img_link.endswith('.jpeg'):
         return '.jpeg'
@@ -27,37 +25,45 @@ def get_img_ext(img_link):
         return '.png'
     else: return ""
 
-
-options = webdriver.ChromeOptions()
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# options.add_extension(os.path.join('..','chromedriver_win32','uBlock-Origin.crx'))
-# options.add_experimental_option('excludeSwitches', ['enable-logging'])
-
-# # Since chromedriver is in PATH we dont have specify it location otherwise webdriver.Chrome('path/chromedriver.exe')
-driver = webdriver.Chrome(m.CHROME_DRIVER_PATH, chrome_options=options)
+driver = webdriver.Chrome(m.CHROME_DRIVER_PATH,service_log_path=os.devnull)
 
 #Load Initial Page and remove cookie pop-up
 driver.get(f'https://www.independent.com.mt/local?pg=1')
 sleep(2)
-driver.find_element(By.XPATH,'//*[@id="CybotCookiebotDialogBodyButtonDecline"]').click()
-
+try: driver.find_element(By.XPATH,'//*[@id="CybotCookiebotDialogBodyButtonDecline"]').click()
+except: pass
 data = []
 img_count = 0
 
+columns = ['Title','Author','Date','Image Name','Caption','Body','URL']
+
+num_pgs = 100
+save_every = 5
+assert num_pgs%save_every == 0
+signal.signal(signal.SIGINT, signal_handler)
+
 #For all pages
-for pg_num in range(1,100+1):
+for pg_idx in range(5,num_pgs+1):
+    
     #Go to next page
-    driver.get(f'https://www.independent.com.mt/local?pg={pg_num}')
+    driver.get(f'https://www.independent.com.mt/local?pg={pg_idx+1}')
 
-    for i in range(9):
-        signal.signal(signal.SIGINT, signal_handler)
+    #Get all links to articles
+    links = []
+    for i in driver.find_elements(By.CLASS_NAME,"image-section"):
+        try: a = i.find_element(By.TAG_NAME,'a').get_attribute('href')
+        except: continue
+        
+        links.append(a)
 
-        #Go to article i
-        driver.find_element(By.XPATH,f'//*[@id="ctl00_wrapperArticlesWrapper"]/section/div[1]/div[1]/article[{i+1}]/div[1]/a').click()
+    for a in links:
 
-        #Get title
+        #Go to Article
+        driver.get(a)
+
+        #Get Title
         title = driver.find_element(By.XPATH,'//*[@id="ctl00_wrapperArticlesWrapper"]/section/div[1]/div[1]/article/h2').text        
-        print(title)
+        print(f'{color.BLUE}Extracting: {title[:30]}... {color.ESC}',end='')
 
         #Get links to all images+thumbnail in the article
         img_links = [img.get_attribute('src') for img in \
@@ -81,18 +87,28 @@ for pg_num in range(1,100+1):
                 f.write(img_data)
         
         #Get Body
-        text_content = driver.find_element(By.CLASS_NAME,'text-container')                                                     
+        text_content = driver.find_element(By.CLASS_NAME,'text-container')
         body = " ".join(p.text for p in text_content.find_elements(By.TAG_NAME,'p'))
-                                                       
-         
+
+
+        #Get Author
+        try: author = driver.find_element(By.XPATH,'//*[@id="ctl00_ArticleDetails_TMI_lblAuthor"]').text
+        except: author= ""
+
+        #Get Date                           
+        date = driver.find_element(By.XPATH,f'//*[@id="ctl00_wrapperArticlesWrapper"]/section/div[1]/div[1]/article/div[1]/span[{[2,1][author==""]}]').text
+        date = datetime.strptime(date,"%A, %d %B %Y, %H:%M").strftime('%d-%m-%Y')
+
         #Append row
-        data.append([title,images[:-1],body])
+        data.append([title,author,date,images[:-1],"",body,a])
 
-        #Return to article list
-        driver.get(f'https://www.independent.com.mt/local?pg={pg_num}')
-
+    #Save data to csv
+    if pg_idx%save_every:
+        print(f'Saving on {pg_idx+1}')
+        (pd.DataFrame(columns=columns,data=data)
+            .to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False))
 
 #Save data to csv
-pd.DataFrame(columns=['Title','Image Name','Body'],
-             data=data).to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False)
+(pd.DataFrame(columns=columns,data=data)
+       .to_csv(os.path.join(m.NEWS_PATH,'data.csv'), index=False))
 driver.quit()
