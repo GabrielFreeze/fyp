@@ -1,4 +1,6 @@
 img/
+*.jpg
+*.jpg
 *.csv
 *.exe
 *.pyc
