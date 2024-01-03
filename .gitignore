@@ -1,13 +1,11 @@
-sub
-BLIP
-checkpoints
-data_visual/flickr30k
 data_collection/the_shift
 data_collection/times_of_malta
 data_collection/malta_today
 data_collection/independent
 data_collection/malta_daily
 data_collection/gozo_news
+
 data_collection/chromedriver_win32
-data_collection.zip
-data_visual/figures
+data_collection/geckodriver
+
+
