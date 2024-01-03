@@ -1,5 +1,4 @@
 img/
-data_collection/*/img/*.jpg
 *.jpg
 *.csv
 *.exe
