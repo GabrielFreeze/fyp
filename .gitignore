@@ -7,4 +7,5 @@ img/
 *.db
 *.bin
 *.ipynb_checkpoints
+__pycache__/
 checkpoints/
