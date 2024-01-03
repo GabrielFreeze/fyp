@@ -7,5 +7,5 @@ data_collection/*/img/*.jpg
 *.db
 *.bin
 */.ipynb_checkpoints/
-*/__pycache__/
+__pycache__/
 checkpoints/
