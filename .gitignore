@@ -1,11 +1,11 @@
 img/
-*.jpg
+data_collection/*/img/*.jpg
 *.jpg
 *.csv
 *.exe
 *.pyc
 *.db
 *.bin
-*.ipynb_checkpoints
-__pycache__/
+*/.ipynb_checkpoints/
+*/__pycache__/
 checkpoints/
