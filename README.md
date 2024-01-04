@@ -82,7 +82,7 @@ calculating the mean.</p>
     <td>16.18</td>
   </tr>
   <tr>
-    <td>Malta Independent</td>
+    <td>Malta Independent*</td>
     <td>10.96</td>
     <td>29.92</td>
     <td>21.27</td>
