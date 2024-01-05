@@ -118,11 +118,12 @@ gabriel.hili@um.edu.mt
 
 <h3>Cite this work</h3>
 <pre>
-  @article{hili2023using,
+  @mastersthesis{hili2023using,
   title={Using machine learning to investigate potential image bias in news articles},
-  author={Gabriel Hili},
+  author={Hili, Gabriel},
+  type={{B.S.} thesis},
   year={2023},
-  publisher={OAR@UM}
+  school={University of Malta}
 }
 </pre>
 
